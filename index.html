@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIET College Enquiry</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #4C669F;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .chat-container {
+            width: 400px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 5px solid;
+            animation: borderAnimation 5s infinite;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            position: relative;
+        }
+        /* Kebab Menu styling */
+        .kebab-menu {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+        }
+        .chatbox {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #ddd;
+        }
+        .chat-input-container {
+            display: flex;
+            padding: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .send-btn {
+            background-color: black;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .send-btn:hover {
+            background-color: #0056b3;
+        }
+        .send-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -75%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.2), rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+            transform: skewX(25deg);
+            transition: all 0.5s ease;
+        }
+        .send-btn:hover::before {
+            left: 100%;
+            transition: all 0.75s ease;
+        }
+        .send-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.5), rgba(255,255,255,0) 70%);
+            background-size: 400% 400%;
+            animation: sparkle 2s infinite linear;
+            opacity: 0.3;
+        }
+        .message {
+            margin-bottom: 10px;
+            display: flex;
+            clear: both;
+        }
+        .message p {
+            margin: 0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .message.user {
+            justify-content: flex-end;
+        }
+        .message.user p {
+            background-color: #007bff;
+            color: white;
+        }
+        .message.bot {
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .message.bot p {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        @keyframes borderAnimation {
+            0% {
+                border-color: red;
+            }
+            50% {
+                border-color: green;
+            }
+            100% {
+                border-color: blue;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            GIET College Enquiry
+            <div class="kebab-menu" onclick="toggleDropdown()">⋮</div>
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="https://giet.ac.in/aboutus.html" target="_blank">About Us</a>
+                <a href="https://giet.ac.in/iqac.html" target="_blank">Administration</a>
+                <a href="https://giet.ac.in/courses.html" target="_blank">Academics</a>
+                <a href="https://giet.ac.in/departments.html" target="_blank">Departments</a>
+                <a href="https://giet.ac.in/academic_calendar.html#" target="_blank">Examinations</a>
+                <a href="https://giet.ac.in/assets/document/Placement_Cell_info_for_website.pdf" target="_blank">Training & Placements</a>
+            </div>
+        </div>
+        <div class="chatbox" id="chatbox"></div>
+        <div class="chat-input-container">
+            <input list="questions" id="userInput" class="chat-input" placeholder="Type your question...">
+            <datalist id="questions">
+                <option value="What are the office hours for admissions?">
+                <option value="What courses do you offer?">
+                <option value="Can you tell me about the tuition fees?">
+                <option value="Do you offer any scholarships?">
+                <option value="What are your timings?">
+                <option value="What is the location?">
+                <option value="GIET College full view">
+            </datalist>
+            <button class="send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDropdown() {
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            if (dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim() === '') return;
+
+            addMessage(userInput, 'user');
+
+            const botResponse = getBotResponse(userInput);
+            setTimeout(() => addMessage(botResponse, 'bot'), 1000);
+
+            document.getElementById('userInput').value = '';
+        }
+
+        function addMessage(text, sender) {
+            const chatbox = document.getElementById('chatbox');
+            const message = document.createElement('div');
+            message.classList.add('message', sender);
+            message.innerHTML = `<p>${text}</p>`;
+            chatbox.appendChild(message);
+            chatbox.scrollTop = chatbox.scrollHeight;
+        }
+
+        function getBotResponse(query) {
+            const responses = {
+                "admissions": 'Our admissions office is open from 9 AM to 5 PM. You can contact us at <a href="https://giet.campx.in/gier/payments/public/login" target="_blank">click here</a>.',
+                "courses": "We offer a variety of courses including Computer Science, Business, and Arts.",
+                "fees": "The tuition fee varies by program. Please visit our website or contact the admissions office for more details.",
+                "scholarships": "We offer several scholarships based on merit and need. Visit our scholarships page for more information.",
+                "timings": "Our office timings are from 9:30 AM to 4:15 PM.",
+                "location": 'Our college is located at Rajamahendrawaram. <a href="https://www.google.com/search?q=giet+college+location" target="_blank">click here to know about map location</a>.',
+                "full view": 'You can watch the full view of GIET College here: <a href="https://youtu.be/5jdwjAJ_QMY" target="_blank">GIET College Full View</a>.'
+            };
+
+            query = query.toLowerCase();
+            for (let key in responses) {
+                if (query.includes(key)) {
+                    return responses[key];
+                }
+            }
+            return "I'm sorry, I didn't understand your question. Please try asking about something else.";
+        }
+    </script>
+</body>
+</html>
