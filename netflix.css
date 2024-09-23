@@ -16,10 +16,9 @@ body{
     background-position:center center;
 }
 .box{
-    border-style:solid;
-    border-width: 0.2px;
-    width: 3px;
-    height: 3px;
+    border:  1px solid;
+    padding: 2px 2px;
+
 }
 .bannercontent .bannertitle img{
     object-fit: contain;
