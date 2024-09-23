@@ -39,3 +39,6 @@ body{
 .bannercontent .bannertitle span{
     padding: 2px;
 }
+.bannercontent .bannertitle p{
+    max-width: 45%;
+}
